@@ -45,7 +45,17 @@ int main()
     
     //shift values closer to goal 
     float eps = 1e-3;
-    printf("%f\n",cost(w));
-    printf("%f\n", cost(w - eps));
+    // use the definition of derivitive to make use of epsilon to have a more accurate prediction
+    // better known as the distance of cost
+    // def of derivitive = L = lim as h approaches 0  f(a+h) - f(a) / h
+    float dcost = (cost(w + eps) - cost(w)) / eps;
+    float rate = 1e-3;
+    printf("%f\n", cost(w));
+    //subtract from w where w is the modifier variable 
+    // mathematical expression pulled from Finite Difference
+    // also introduce learning rate
+    w -= rate * dcost;
+    printf("%f\n", cost(w));
+    
     return 0;
 }
