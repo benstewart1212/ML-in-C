@@ -7,3 +7,5 @@ There are several goals with this project:
 3. Get an intro to Machine Learning
 
 Question: If we want something from data can we create a model to predict an outcome?
+
+Single Neuron: resembles an artificial single neuron as is the basis for most ml models. Extremely simple example but acts as a stepping stone. Still pretty cool imo ;)
