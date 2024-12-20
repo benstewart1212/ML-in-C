@@ -1,10 +1,19 @@
-
+/*
+ * Based on the "ML-in-C" series by Tsoding.
+ * Link here: https://www.youtube.com/watch?v=PGSba51aRYU&t=3535s
+ * Replicates a single neuron; Comment heavy as this is used for learning purposes
+ */
+ 
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-// predict some number based on an input number
+/*
+ * non-dependent training data used to determine the outcome
+ * in its current state the final value of w should be 5 
+*/
+
 float train[][2] = {
 	{0,0},
 	{1,5},
@@ -15,16 +24,25 @@ float train[][2] = {
 
 #define train_count (sizeof(train)/sizeof(train[0]))
 
+// Produces a random float value between 0.0 and 1.0
 float rand_float(void) {
 	return (float) rand() / (float) RAND_MAX;
 }
 
+/*
+ * input w: The weight value, used to evaluate fit
+ * retrieve input value of x for the ith example
+ * predict output using linear model: y = x * w
+ * calculate error being the difference between the prediction and target value
+ * square error to penalize large deviations
+ * return average error per data point using the sum of squared errors: (result / train_count)
+ */
+ 
 float cost(float w) {
 	float result = 0.0f;
 	for (size_t i = 0; i < train_count; ++i) {
 		float x = train[i][0];
 		float y = x*w;
-		// track the distance of error
 		float d = y - train[i][1];
 		result += d*d;
 	}
@@ -37,38 +55,23 @@ int main()
 {
 
 	srand(time(0));
-	// basic model
-	// y = x * w
-
-	float w = rand_float() * 10.0f;
-
-	//shift values closer to goal
-	float eps = 1e-3;
+	float w = rand_float() * 10.0f; //random initialization of weight
+	float eps = 1e-3; // small val used to estimate gradient
+	float rate = 1e-3; // small val used to control weights update rate
+	printf("Intial Cost = %f\n", cost(w)); // initial cost calculation
+	printf("----------------------------------------------------------------------\n");
 	
-	// use the definition of derivitive to make use of epsilon to have a more accurate prediction
-	// better known as the distance of cost
-	// def of derivitive = L = lim as h approaches 0  f(a+h) - f(a) / h
-	//float dcost = (cost(w + eps) - cost(w)) / eps;// relocated to for loop
-	
-	
-	float rate = 1e-3;
-	printf("%f\n", cost(w));
-	
-	
-	//subtract from w where w is the modifier variable
-	// mathematical expression pulled from Finite Difference
-	// also introduce learning rate
 	for(size_t i = 0; i < 500; ++i){
-	        float dcost = (cost(w + eps) - cost(w)) / eps;
-	    	w -= rate * dcost;
-	    	// just to show the changes are being made w/o printing all 500 iterations
+	        float dcost = (cost(w + eps) - cost(w)) / eps; // the gradient approximation
+	    	w -= rate * dcost; // changes weight by moving in the direction that reduces the cost
+	    	// used to show progress every 20 iterations
 	    	if(i%20 == 0){
 	            printf("cost = %f, w = %f\n", cost(w), w);
 	    	}
 	}
 	
 	printf("----------------------------------------------------------------------\n");
-	printf("%f\n", w);
+	printf("Final Output =  %f\n", w);
 
 	return 0;
 }
